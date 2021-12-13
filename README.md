@@ -1,5 +1,4 @@
-# sc_cop
-Single cell local gene co-expression project
+# sc_cop: Single cell local gene co-expression pairs (COP) project
 
 This repository contains scripts for data processing, analysis and figure generation data for our preprint:
 
