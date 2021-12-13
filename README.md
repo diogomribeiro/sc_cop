@@ -6,6 +6,7 @@ Ribeiro DM, Ziyani C, Delaneau O. **Shared regulation and functional relevance o
 
 ## Analysis scripts
 - **CODer.py** : Script to identify local co-expressed gene pairs (COPs) given a gene expression matrix. Example usage: python3 CODer.py expression_matrix.bed output_folder 1000 --fdrCutoff 0.01
+- **ShareSeqCoex.py** Script to identify co-expressed gene-peak pairs from single cell a atac-seq and gene expression in same cells. Example usage: python3 ShareSeqCoex.py gene_matrix.tsv peak_matrix.tsv gencode_v19.bed output_file.txt
 - **manuscript_figures** : Folder with all scripts used to produce figures for the paper. This includes the code to perform logistic regression analysis.
 
 ## Data availability
