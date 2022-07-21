@@ -1,0 +1,10 @@
+ExternalList	Size	ItemGroup	Size	Overlap	OddsRatio	Pvalue
+conserved_cops	264	1: bulk 15 PCA	1158	44	11.38	4.1e-29
+conserved_cops	264	2: union	1199	18	3.92	2.7e-06
+conserved_cops	264	3: intersect 5	197	9	12.07	1.4e-07
+same_complex	126	1: bulk 15 PCA	1158	11	5.29	1.8e-05
+same_complex	126	2: union	1199	22	11.40	2.1e-15
+same_complex	126	3: intersect 5	197	10	29.71	7.7e-12
+same_pathway	6454	1: bulk 15 PCA	1158	144	1.29	3.4e-03
+same_pathway	6454	2: union	1199	270	2.70	6.0e-38
+same_pathway	6454	3: intersect 5	197	79	6.11	6.8e-29

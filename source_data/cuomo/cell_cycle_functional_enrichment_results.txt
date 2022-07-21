@@ -1,0 +1,17 @@
+ExternalList	Size	ItemGroup	Size	Overlap	OddsRatio	Pvalue
+conserved_cops	1206	1: all phases	3877	97	6.00	8.4e-41
+conserved_cops	1206	2: G1 phase	291	7	5.40	4.3e-04
+conserved_cops	1206	3: S phase	1786	37	4.73	7.7e-14
+conserved_cops	1206	4: G2M phase	2483	58	5.43	2.3e-23
+paralog_genes	8185	1: all phases	3877	96	0.79	9.9e-01
+paralog_genes	8185	2: G1 phase	291	2	0.22	1.0e+00
+paralog_genes	8185	3: S phase	1786	28	0.50	1.0e+00
+paralog_genes	8185	4: G2M phase	2483	40	0.51	1.0e+00
+same_complex	314	1: all phases	3877	50	12.88	1.3e-35
+same_complex	314	2: G1 phase	291	4	11.86	4.4e-04
+same_complex	314	3: S phase	1786	21	10.65	9.8e-15
+same_complex	314	4: G2M phase	2483	24	8.80	8.2e-15
+same_pathway	22362	1: all phases	3877	624	2.11	2.0e-54
+same_pathway	22362	2: G1 phase	291	28	1.15	2.7e-01
+same_pathway	22362	3: S phase	1786	248	1.75	1.4e-14
+same_pathway	22362	4: G2M phase	2483	356	1.82	1.6e-22
