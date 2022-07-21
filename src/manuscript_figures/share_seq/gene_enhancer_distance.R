@@ -8,9 +8,20 @@ peakAssociationFDRCutoff = 0.05
 peakCorrCutoff = 0.05
 
 ### Read gene-enhancer interactions
-inFile = "zcat ../data/share_seq_gene_enhancer_associations.tsv.gz"
+## Rep3
+inFile = "/scratch/dribeir1/single_cell/multi_omics/coex_peak_F0.5.tsv"
+# inFile = "/scratch/dribeir1/single_cell/multi_omics/coex_peak_F0.5_coding_nofilt.tsv"
+# inFile = "/scratch/dribeir1/single_cell/multi_omics/coex_peak_100kb.tsv"
+## Rep2
+# inFile = "/scratch/dribeir1/single_cell/multi_omics/rep2/coex_peak_F0.5.tsv"
+# inFile = "/scratch/dribeir1/single_cell/multi_omics/rep2/coex_peak_100kb.tsv"
 
-geneModels = fread( "zcat ../data/gencode_v19_tss.bed.gz", stringsAsFactors = FALSE, header = F, sep="\t")
+## Epimap
+# inFile = "zcat /scratch/dribeir1/single_cell/multi_omics/vs_epimap/epimap_lcl.bed.gz"
+# peakGeneData = fread( inFile, stringsAsFactors = FALSE, header = F, sep="\t")
+# colnames(peakGeneData) = c("chr","start","end","gene","corr")
+
+geneModels = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/raw_input/gencode/gencode_v19/genes_tss.bed", stringsAsFactors = FALSE, header = F, sep="\t")
 geneModels$gene = data.table(unlist(lapply(geneModels$V4, function(x) unlist(strsplit(x,"[.]"))[1])))$V1
 geneModels = geneModels[,.(V1,V2,gene)]
 colnames(geneModels) = c("gene_chr","gene_tss","gene")
@@ -35,11 +46,13 @@ mergedData = merge(peakGeneData, geneModels, by = "gene", all.x = T)
 mergedData$distance = abs(mergedData$midpoint - mergedData$gene_tss)
 
 mergedData$group = "not significant"
+# mergedData[corr > 0.1]$group = "significant"
 mergedData[corr > peakCorrCutoff][fdr < peakAssociationFDRCutoff]$group = "significant"
 
 ggplot( mergedData, aes(x = distance, fill = group ))  +
   geom_density(alpha = 0.5) +
   theme_linedraw() + 
+  # xlim(c(0,1000000)) + # for epimap
   scale_fill_brewer(palette = "Set2") +
   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=24), 
         legend.text=element_text(size=20), legend.title=element_blank(),

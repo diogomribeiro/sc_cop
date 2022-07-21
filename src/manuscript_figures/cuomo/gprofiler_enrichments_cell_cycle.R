@@ -3,10 +3,10 @@ library(gprofiler2)
 library(data.table)
 options("scipen"=100, "digits"=2)
 
-g1Genes = fread("../data/functional_enrichment/cuomo2021_g1_genes.txt", header = F)
-sGenes = fread("../data/functional_enrichment/cuomo2021_s_genes.txt", header = F)
-g2mGenes = fread("../data/functional_enrichment/cuomo2021_g2m_genes.txt", header = F)
-backgroundGenes = fread("../data/functional_enrichment/cuomo2021_cycle_background_genes.txt", header = F)
+g1Genes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/G1_genes.txt", header = F)
+sGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/S_genes.txt", header = F)
+g2mGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/G2M_genes.txt", header = F)
+backgroundGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/background_genes.txt", header = F)
 
 gostres <- gost(query = list(g1Genes$V1,sGenes$V1,g2mGenes$V1),organism = "hsapiens", domain_scope = "custom", custom_bg = backgroundGenes$V1, sources = c("GO:BP","KEGG","REAC"), multi_query = T)
 
@@ -49,6 +49,6 @@ g2mRes$p_val3 = format.pval(g2mRes$p_val3,2)
 g2mRes = g2mRes[order(-log10_pval)]
 
 
-# write.table(g1Res,"gprofiler/g1_results.tsv", quote=F, row.names=F, sep = "\t")
-# write.table(sRes,"gprofiler/s_results.tsv", quote=F, row.names=F, sep = "\t")
-# write.table(g2mRes,"gprofiler/g2m_results.tsv", quote=F, row.names=F, sep = "\t")
+write.table(g1Res,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/g1_results.tsv", quote=F, row.names=F, sep = "\t")
+write.table(sRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/s_results.tsv", quote=F, row.names=F, sep = "\t")
+write.table(g2mRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/functional_enrichment/gprofiler/g2m_results.tsv", quote=F, row.names=F, sep = "\t")

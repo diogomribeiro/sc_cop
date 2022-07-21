@@ -11,7 +11,7 @@ peakCorrCutoff = 0.05
 
 ### Read gene-enhancer interactions
 ## Rep3
-inFile = "/scratch/dribeir1/single_cell/multi_omics/coex_peak_F0.5_coding_nofilt.tsv"
+inFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/coex_peak_F0.5_coding_nofilt.tsv"
 # inFile = "/scratch/dribeir1/single_cell/multi_omics/coex_peak_100kb.tsv"
 
 peakGeneData = fread( inFile, stringsAsFactors = FALSE, header = T, sep="\t")
@@ -27,10 +27,15 @@ peakGeneData = peakGeneData[,.(gene,peak,corr,corrSign,corrPval,fdr)]
 peakGeneData[corr > peakCorrCutoff][fdr < peakAssociationFDRCutoff]
 
 ### Read gene-gene co-expression
-inFile = "/scratch/dribeir1/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/CODer_distance_controlled_null.bed_positive"
+inFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/CODer_distance_controlled_null.bed_positive"
 # inFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/cod_identification/GTEx/all_tissues/Cells_EBV-transformed_lymphocytes/final_dataset/CODer_distance_controlled_null.bed_positive"
 
 geneGeneData = fread( inFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
+# 
+# geneGeneData = geneGeneData[distance < 200000]
+# geneGeneData = geneGeneData[`#chr` < 15]
+# 
+# write.table(geneGeneData[pairID %in% copN$V1],"/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/data_to_check2", quote = F, row.names=F, sep = "\t")
 
 cops = geneGeneData[significant == 1]
 cops$gene1 = data.table(unlist(lapply(cops$pairID, function(x) unlist(strsplit(x,"[|]"))[1])))$V1
@@ -141,8 +146,10 @@ text3
 copN = data.table(table(copsMerge[peak_corr1 > peakCorrCutoff][peak_corrFDR1 < peakAssociationFDRCutoff][peak_corr2 > peakCorrCutoff][peak_corrFDR2 < peakAssociationFDRCutoff]$pairID))
 noncopN = data.table(table(noncopsMerge[peak_corr1 > peakCorrCutoff][peak_corrFDR1 < peakAssociationFDRCutoff][peak_corr2 > peakCorrCutoff][peak_corrFDR2 < peakAssociationFDRCutoff]$pairID))
 
-dt = c(nrow(copN),totCOP-nrow(copN),nrow(noncopN),totNonCOP-nrow(noncopN))
-test = fisher.test(matrix(c(nrow(copN),totCOP,nrow(noncopN),totNonCOP),nrow=2))
+dt = c(nrow(copN),nrow(cops)-nrow(copN),nrow(noncopN),nrow(noncops)-nrow(noncopN))
+m=matrix(c(nrow(copN),nrow(cops),nrow(noncopN),nrow(noncops)),nrow=2)
+test = fisher.test(m)
+test$p.value
 
 mergedData = data.table( N = dt, group = c("COP","COP","Non-COP","Non-COP"), fill = c(3,2,1,0), sharing = c(1,0,1,0))
 perc1 = mergedData[group == "COP"][sharing == 1]$N * 100.0 / (mergedData[group == "COP"][sharing == 1]$N + mergedData[group == "COP"][sharing == 0]$N)
@@ -155,10 +162,10 @@ ggplot( mergedData, aes(x = group, y = N, fill = as.factor(fill) ))  +
   annotate(geom = "text", label = paste0(round(100-perc1,1),"%"), x = "COP", y = mergedData[group=="COP"][sharing == 0]$N + mergedData[group=="COP"][sharing == 1]$N/1.02, size = 8) +
   annotate(geom = "text", label = paste0(round(perc2,1),"%"), x = "Non-COP", y = mergedData[group=="Non-COP"][sharing == 1]$N/2, size = 8) +
   annotate(geom = "text", label = paste0(round(100-perc2,1),"%"), x = "Non-COP", y = mergedData[group=="COP"][sharing == 0]$N +  mergedData[group=="COP"][sharing == 1]$N/1.5, size = 8) +
-  annotate("text", x = Inf, y = Inf, label = text, hjust = 1.05, vjust = 2.5, size = 7.5, fontface = "bold"  ) +
+  # annotate("text", x = Inf, y = Inf, label = text, hjust = 1.05, vjust = 2.5, size = 7.5, fontface = "bold"  ) +
   # ggtitle("# gene pairs sharing enhancers") +
   # coord_flip() +
-  ylim(c(0,max(mergedData$N)+300)) +
+  ylim(c(0,max(mergedData$N)+150)) +
   xlab("group") +
   ylab("Number of gene pairs") +
   # scale_fill_brewer(palette = "Set2") +

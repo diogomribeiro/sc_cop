@@ -2,9 +2,7 @@
 library(data.table)
 library(ggplot2)
 
-setwd("~/git/sc_cop/src")
-
-inFile = "../data/cuomo2021_sc_cops_final_dataset.bed.gz"
+inFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/CODer_final_dataset_cops_merged_removedoutliers.bed"
 
 data = fread( inFile, stringsAsFactors = FALSE, header = T, sep="\t")
 data = unique(data[,.(pairID,dataset)])
@@ -57,3 +55,20 @@ ggplot( meltedDT, aes(x = variable, y = value, color = variable)) +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.border = element_rect(colour = "black", fill=NA, size=1), aspect.ratio = 1, 
         legend.title=element_blank(), legend.position = "None", legend.text = element_text(size = 22))
+
+# cor.test(finalDT$observed, finalDT$expected)
+# 
+# ggplot( finalDT, aes(x = expected, y = observed, color = donor)) +
+#   geom_point() +
+#   geom_abline(slope = 1, color = "red") +
+#   scale_fill_brewer( palette = "Set2") +
+#   xlim(c(0,max(max(finalDT$observed),max(finalDT$expected)))) + 
+#   xlim(c(0,max(max(finalDT$observed),max(finalDT$expected)))) + 
+#   theme_minimal() +
+#   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=24),
+#         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#         panel.border = element_rect(colour = "black", fill=NA, size=1), aspect.ratio = 1, axis.text.x = element_text(angle = 20, hjust = 1),
+#         legend.title=element_blank(), legend.position = "None", legend.text = element_text(size = 22))
+
+
+

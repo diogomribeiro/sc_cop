@@ -5,13 +5,13 @@ require(ggplot2)
 library(grid)
 library(gridExtra)
 
-inputFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/results.txt"
+inputFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/manuscript/revision/sarkar2019/scran/functional_enrichment/genefilt/results.txt"
 
 dataset <- fread(inputFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
 
 colnames(dataset) = c("ExternalList","Size1","ItemGroup","Size2","Overlap","OddsRatio","Pvalue")
 
-background = 259834 ### IMPORTANT UPDATE THIS ACCORDINGLY!!
+background = 64756 ### IMPORTANT UPDATE THIS ACCORDINGLY!!
 
 dataset$theSum = background - (dataset$Size1 + dataset$Size2) - dataset$Overlap
 dataset$theFirst = dataset$Size1 - dataset$Overlap
@@ -74,9 +74,9 @@ g2 = ggplot() +
   xlab("% overlap") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=24), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
-      legend.position = "none", legend.key = element_rect(size = 1), legend.key.size = unit(1, 'lines'), legend.title = element_text(size = 12), legend.text = element_text(size = 10), 
-      panel.background = element_rect(colour = "black", fill = "white", size = 1),
-      axis.text.y = element_blank(), axis.ticks = element_blank(), axis.title.y = element_blank(), plot.margin = unit(c(0.2,0.8,0.2,0), "cm"))
+        legend.position = "none", legend.key = element_rect(size = 1), legend.key.size = unit(1, 'lines'), legend.title = element_text(size = 12), legend.text = element_text(size = 10), 
+        panel.background = element_rect(colour = "black", fill = "white", size = 1),
+        axis.text.y = element_blank(), axis.ticks = element_blank(), axis.title.y = element_blank(), plot.margin = unit(c(0.2,0.8,0.2,0), "cm"))
 
 lay <- rbind(c(1,1,1,1,2))
 grid.arrange(g1,g2, layout_matrix = lay)

@@ -4,8 +4,8 @@ options(scipen=1)
 library(data.table)
 library(ggplot2)
 
-copFile = "zcat ../data/shareseq_sc_cops_control.bed.gz"
-groFile = "zcat ../data/gro_seq_allreads.bed.gz"
+copFile = "/scratch/dribeir1/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/CODer_distance_controlled_null.bed_positive"
+# copFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/cod_identification/GTEx/all_tissues/Cells_EBV-transformed_lymphocytes/final_dataset/CODer_distance_controlled_null.bed_positive"
 
 copData =  fread( copFile, stringsAsFactors = FALSE, header = T, sep="\t")
 copData = unique(copData[,.(centralPhenotype,cisPheno,significant, distance, nullId)])
@@ -14,6 +14,8 @@ copData$centralPhenotype = data.table(unlist(lapply(copData$centralPhenotype, fu
 copData$cisPheno = data.table(unlist(lapply(copData$cisPheno, function(x) unlist(strsplit(x,"[.]"))[1])))$V1
 
 genes = unique(c(copData$centralPhenotype,copData$cisPheno))
+
+groFile = "/scratch/dribeir1/single_cell/raw_input/gro_seq_gm12878/share_seq_tss_gro_seq_support_allreads.bed"
 
 groData = fread( groFile, stringsAsFactors = FALSE, header = F, sep="\t")
 groData$readSign = "+"
@@ -30,6 +32,8 @@ mergedData = merge(mergedData,groData, by.x = "cisPheno", by.y = "V4", all.x = T
 table(mergedData$significant)
 
 ## Correlation of reads
+# mergedData[is.na(V9.x)]$V9.x = 0
+# mergedData[is.na(V9.y)]$V9.y = 0
 mergedData$dataset = "-1"
 mergedData[significant == 1]$dataset = "COP"
 mergedData[significant == 0]$dataset = "Non-COP"

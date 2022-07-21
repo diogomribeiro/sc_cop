@@ -2,11 +2,9 @@
 library(ggplot2)
 library(data.table)
 
-args = commandArgs(trailingOnly=TRUE)
-
 ## EPIMAP
 
-data = fread( args[1], stringsAsFactors = FALSE, header = F, sep="\t")
+data = fread( "/scratch/dribeir1/single_cell/multi_omics/vs_epimap/coex_epimap_intersect.bed", stringsAsFactors = FALSE, header = F, sep="\t")
 colnames(data) = c("chr_coex","start_coex","end_coex","gene_coex","corr","corr_sign","corr_pval","chr_epi","start_epi","end_epi","gene_epi","epi_score")
 data[corr_sign == "-"]$corr = -data[corr_sign == "-"]$corr
 
@@ -29,7 +27,7 @@ ggplot(data, aes(x = corr_norm, y = epi_score_norm) ) +
 
 ## ABC model
 
-data = fread( args[2], stringsAsFactors = FALSE, header = F, sep="\t")
+data = fread( "/scratch/dribeir1/single_cell/multi_omics/vs_abc/coex_abc_intersect.bed", stringsAsFactors = FALSE, header = F, sep="\t")
 colnames(data) = c("chr_coex","start_coex","end_coex","gene_coex","corr","corr_sign","corr_pval","chr_abc","start_abc","end_abc","gene_abc","abc_score")
 data[corr_sign == "-"]$corr = -data[corr_sign == "-"]$corr
 
@@ -52,7 +50,7 @@ ggplot(data, aes(x = corr_norm, y = abc_score_norm) ) +
 
 ## Epi vs ABC
 
-data = fread( args[3], stringsAsFactors = FALSE, header = F, sep="\t")
+data = fread( "/scratch/dribeir1/single_cell/multi_omics/vs_abc/epi_abc_intersect.bed", stringsAsFactors = FALSE, header = F, sep="\t")
 colnames(data) = c("chr_epi","start_epi","end_epi","gene_epi","epi_score","chr_abc","start_abc","end_abc","gene_abc","abc_score")
 
 data$epi_score_norm = qnorm((rank(data$epi_score))/(length(data$epi_score)+1))

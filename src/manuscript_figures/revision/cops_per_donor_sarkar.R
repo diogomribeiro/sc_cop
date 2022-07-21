@@ -6,9 +6,14 @@ options(scipen=1)
 library(data.table)
 library(ggplot2)
 
-inFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/CODer_final_dataset_cops_merged_removedoutliers.bed"
+inFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/manuscript/revision/sarkar2019/scran/CODer_final_dataset_cops_merged_removedoutliers.bed"
 
 data = fread(inFile, header = T, sep = "\t")
+
+# Filter for individuals used in bulk data
+listDonors = fread("/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/raw_input/geuvadis/yoruba/individuals_used",header = F)
+data = data[dataset %in% listDonors$V1]
+
 
 summary(data$corr)
 
@@ -20,7 +25,7 @@ dt = unique(data[,.(pairID,dataset)])
 
 length(unique(dt$pairID))
 
-medataFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/raw_input/cuomo2021/sc_rna_seq/CellSampleMetadata_reformat.txt"
+medataFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/raw_input/sarkar2019/sarkar2019_metadata.txt"
 metadata = fread(medataFile, header = T, sep = "\t")
 
 ## COPs per donor
@@ -48,7 +53,7 @@ ggplot( m, aes(x = cells, y = cops ))  +
   ylab("Number of COPs") +
   # coord_flip() +
   # xlim(c(0,400)) +
-  ylim(c(0,700)) +
+  ylim(c(0,350)) +
   theme_linedraw() + 
   theme(text = element_text(size=24), legend.title=element_blank(),
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
@@ -73,14 +78,8 @@ ggplot( dd, aes(x = perc ))  +
         axis.line = element_line(colour = "black", size = 1),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
-
-dd[perc > 50]
-
-hist(log10(dd$perc), breaks = 10)
-
-
 d = data.table(c("1 individual","2 to 5","5 or more"), c(nrow(dd[N==1]),nrow(dd[N>1][N<5]),nrow(dd[N>=5]) ) )
-write.table(unique(dd[N>=5]$V1),"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/COPs_5_or_more.txt", quote = F,row.names=F,col.names=F)
+# write.table(unique(dd[N>=5]$V1),"/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/manuscript/revision/sarkar2019/scran/COPs_5_or_more.txt", quote = F,row.names=F,col.names=F)
 
 text = paste("Total COPs:", nrow(dd))
 ggplot( d, aes(x = V1, y = V2, fill = V1))  +
@@ -99,29 +98,3 @@ ggplot( d, aes(x = V1, y = V2, fill = V1))  +
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
 length(unique(data$pairID))
-
-
-data$run = data.table(unlist(lapply(data$originalDataset, function(x) unlist(strsplit(x,"[-]"))[2])))$V1
-data = unique(data[,.(pairID,dataset,run)])
-perDonorRun = data.table(table(data$dataset, data$run))
-colnames(perDonorRun) = c("donor","run","dr_cops")
-
-perDonorRun = unique(perDonorRun[dr_cops>0])
-sum(perDonorRun$dr_cops)
-
-perDonorRun[dr_cops > 500]
-
-perDonorRun = merge(perDonorRun,m, by ="donor")
-
-ggplot( perDonorRun, aes(x = reorder(donor,dr_cops, sum), y = dr_cops, fill = run))  +
-  geom_bar( stat = "identity", color = "black", size = 1, alpha = 0.8) +
-  xlab("Individuals") +
-  ylab("# COPs") +
-  # ylim(c(0,1001)) +
-  coord_flip() +
-  theme_linedraw() + 
-  theme(plot.title = element_text(hjust = 0.5), text = element_text(size=30), 
-        axis.text.y = element_text(size = 12), 
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
-        axis.line = element_line(colour = "black", size = 1),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))

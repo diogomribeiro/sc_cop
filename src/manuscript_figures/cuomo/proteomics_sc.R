@@ -5,21 +5,20 @@ library(data.table)
 library(ggplot2)
 
 options(scipen=1)
-args = commandArgs(trailingOnly=TRUE)
 
 ##########
 # Input parameters
 ##########
 
-proteinFile = args[1] #"mirauta_2020_elife/elife-57390-fig1-data3-v3.xls"
+proteinFile = "/scratch/dribeir1/single_cell/raw_input/proteomics/mirauta_2020_elife/elife-57390-fig1-data3-v3.xls"
 proteinData = fread( proteinFile, stringsAsFactors = FALSE, header = T, sep="\t")
 
 wantedGenes = proteinData$ensembl_gene_id
 
 nCOPCutoff = 10 #minimum number of COPs of donor-run for analysis 
 
-listDonorRun = fread( "../data/cuomo2021_list_individual_experiment.tsv", stringsAsFactors = FALSE, header = F, sep="\t")
-baseFolder = args[2] # all_runs/
+listDonorRun = fread( "/scratch/dribeir1/single_cell/raw_input/cuomo2021/sc_rna_seq/per_donor_per_experiment/list_donor_runs.txt", stringsAsFactors = FALSE, header = F, sep="\t")
+baseFolder = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/all_runs/"
 
 ##########
 # Process protein data (sum intensities for several isoforms of same gene)

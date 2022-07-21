@@ -5,13 +5,13 @@ require(ggplot2)
 library(grid)
 library(gridExtra)
 
-inputFile = "../data/functional_enrichment/shareseq_functional_enrichement.tsv"
+inputFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/functional_enrichment/results.txt"
 
 dataset <- fread(inputFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
 
 colnames(dataset) = c("ExternalList","Size1","ItemGroup","Size2","Overlap","OddsRatio","Pvalue")
 
-background = 73627 
+background = 73627 ### IMPORTANT UPDATE THIS ACCORDINGLY!!
 
 dataset$theSum = background - (dataset$Size1 + dataset$Size2) - dataset$Overlap
 dataset$theFirst = dataset$Size1 - dataset$Overlap
@@ -50,8 +50,8 @@ g1 = ggplot( ) +
   geom_segment(data = dataset[ItemGroup == "GTEx LCL"], aes(x = confmin, xend = confmax, y = ExternalList, yend = ExternalList, color = ItemGroup), position = position_nudge(y = 0.0), size = 3 ) +
   geom_point(data = dataset[ItemGroup == "GTEx LCL"], aes(x = odds, y = ExternalList, fill = ItemGroup), position = position_nudge(y = 0.0), size = 6, shape = 24) + 
   xlab("Odds ratio (log-scale)") +
-  scale_fill_brewer(palette = "Set1") +
-  scale_color_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set2") +
+  scale_color_brewer(palette = "Set2") +
   ylab("") +
   scale_x_log10(breaks = c(1,2,3,5,7,10,15,25,40,60,90)) +
   theme_minimal() + 
@@ -66,7 +66,7 @@ dataset$percOverlap = dataset$Overlap * 100 / dataset$Size2
 g2 = ggplot() +
   geom_bar(data = dataset[ItemGroup == "SHARE-seq"], stat = "identity", aes(x = percOverlap, y = ExternalList, fill = ItemGroup), position = position_nudge(y = 0.15), color = "black",  width = 0.15) +
   geom_bar(data = dataset[ItemGroup == "GTEx LCL"], stat = "identity", aes(x = percOverlap, y = ExternalList, fill = ItemGroup), position = position_nudge(y = 0), color = "black",  width = 0.15) +
-  scale_fill_manual(values = c("#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#999999","#a65628","#f781bf")) +
+  scale_fill_manual(values = c("#b3e2cd","#fdcdac","#cbd5e8","#984ea3","#ff7f00","#999999","#a65628","#f781bf")) +
   xlab("% overlap") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=24), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),

@@ -1,7 +1,7 @@
 
 library(data.table)
 
-inFile = "../data/cuomo2021_sc_cops_final_dataset.bed.gz"
+inFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/CODer_final_dataset_cops_merged_removedoutliers.bed"
 
 data <- fread(inFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
 
@@ -49,3 +49,18 @@ resultDT$gene2 = data.table(unlist(lapply(resultDT$pair_id, function(x) unlist(s
 mergedData = merge(resultDT,tssData, by.x = "gene2", by.y = "cisPheno")
 colnames(tssData) = c("gene1","gene1_tss","gene1_name")
 mergedData = merge(mergedData,tssData, by = "gene1",all.x = T)
+
+## BULK COP overlap
+
+bulkCOPs = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/bulk_rna_seq/15PCA_1MB/final_dataset/cops.txt", header = F, sep = "\t")
+
+mergedData$in_bulk = 0
+mergedData[pair_id %in% bulkCOPs$V1]$in_bulk = 1
+
+
+mergedData$pair_id = NULL
+
+finalDT = mergedData[,.(gene1,gene1_name,gene1_tss,gene2,gene2_name,gene2_tss,n_ind,n_exp,min_corr,mean_corr,max_corr,in_bulk,ind_exp)]
+
+write.table(finalDT, "/home/dribeiro/Downloads/supplementary_table_1.tsv",sep = "\t",quote = F, col.names=T, row.names=F)
+

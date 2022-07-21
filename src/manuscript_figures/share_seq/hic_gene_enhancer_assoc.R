@@ -4,7 +4,14 @@
 library(ggplot2)
 library(data.table)
 
-data = fread( "zcat ../data/shareseq_hic_contacts.bed.gz", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/scratch/dribeir1/single_cell/multi_omics/hic/coex_F0.5_enhancer_gene/coex_peak_mergenh_F_0.5.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+data = fread( "/scratch/dribeir1/single_cell/multi_omics/hic/coex_F0.5_enhancer_gene_coding_nofilt/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/scratch/dribeir1/single_cell/multi_omics/hic/coex_F0.5_enhancer_gene_coding/coex_peak_mergenh_F_0.5_coding.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/scratch/dribeir1/single_cell/multi_omics/hic/coex_F0.5_enhancer_gene_rep2/coex_peak_rep2_mergenh_F_0.5.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+
+data = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/hic/25kb_normalised/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/hic/10kb_normalised/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+
 
 data$fdr = p.adjust(data$corrPval, method = "BH")
 
@@ -48,6 +55,22 @@ ggplot(data[real == 0], aes(x = corr, y = res) ) +
   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=28), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
         panel.background = element_rect(colour = "black", fill = "white", size = 1), aspect.ratio = 1
   )
+
+# ## Distance vs contacts
+# p = cor.test(data[real == 1]$dist,data[real == 1]$normalised_contact, method = "spearman")
+# text = paste("Spearman R:", round(p$estimate,2), "P-val:", format.pval(p$p.value))
+# ggplot(data[real == 1], aes(x = dist, y = normalised_contact) ) +
+#   geom_bin_2d() +
+#   geom_smooth(method = "lm") +
+#   annotate("text", x = Inf, y = Inf, label = text, hjust = 1.05, vjust = 1.5, size = 7, fontface = "bold"  ) +
+#   xlim(c(0,1000000)) +
+#   xlab("Distance") +
+#   ylab("Hi-C contact (log-scaled)") +
+#   theme_minimal() +
+#   theme(plot.title = element_text(hjust = 0.5), text = element_text(size=20), panel.grid.major=element_blank(), panel.grid.minor=element_blank(),
+#         panel.background = element_rect(colour = "black", fill = "white", size = 1),
+#   )
+
 
 data$significant = "no interaction"
 data[fdr < peakAssociationFDRCutoff][corrSign == "+"][corr > peakCorrCutoff]$significant = "interaction"

@@ -4,9 +4,9 @@
 library(data.table)
 require(ggplot2)
 
-bulk = unique(fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/bulk_rna_seq/15PCA_1MB/final_dataset/CODer_distance_controlled_null.bed_positive", stringsAsFactors=F, header=T, sep="\t"))
-sc = unique(fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/CODer_final_dataset_cops_merged_removedoutliers.bed", stringsAsFactors=F, header=T, sep="\t"))
-scInter = unique(fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/COPs_5_or_more.txt", stringsAsFactors=F, header=F, sep="\t"))
+bulk = unique(fread("/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/bulk_rna_seq/15PCA_1MB/final_dataset/CODer_distance_controlled_null.bed_positive", stringsAsFactors=F, header=T, sep="\t"))
+sc = unique(fread("/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/CODer_final_dataset_cops_merged_removedoutliers.bed", stringsAsFactors=F, header=T, sep="\t"))
+scInter = unique(fread("/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/COPs_5_or_more.txt", stringsAsFactors=F, header=F, sep="\t"))
 
 bulk = unique(bulk[significant == 1])
 
@@ -27,14 +27,14 @@ text1 = paste("Total",sum(dt[group == "BulkCOPs"]$Number_COPs))
 text2 = paste("Total",sum(dt[group == "scCOPs"]$Number_COPs))
 
 ggplot( dt, aes(x = group, y = Number_COPs, fill = as.factor(fill) ))  +
-  geom_bar( stat = "identity", color = "black", size = 1, width = 0.7, alpha = 0.5) +
+  geom_bar( stat = "identity", color = "black", size = 1, width = 0.6, alpha = 0.7) +
   geom_text(aes(label = Number_COPs, y = Number_COPs/1.3), vjust = 1.1, size = 8) +
   annotate("text", x = "BulkCOPs", y = sum(dt[group == "BulkCOPs"]$Number_COPs), label = text1, vjust = -0.5, size = 7, fontface = "bold"  ) +
   annotate("text", x = "scCOPs", y = sum(dt[group == "scCOPs"]$Number_COPs), label = text2, vjust = -0.5, size = 7, fontface = "bold"  ) +
   xlab("Dataset") +
-  ylim(c(0,max(dt$Number_COPs) + 500) ) +
+  ylim(c(0,max(dt$Number_COPs) + 2000) ) +
   ylab("Number of COPs") +
-  scale_fill_brewer(palette= "Set1") +
+  scale_fill_brewer(palette= "Set2") +
   theme_linedraw() + 
   theme(text = element_text(size=24), 
         legend.position = "none", legend.title=element_blank(),
@@ -42,6 +42,20 @@ ggplot( dt, aes(x = group, y = Number_COPs, fill = as.factor(fill) ))  +
         axis.line = element_line(colour = "black", size = 1),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
+## Confusion table
+
+testedPairs=fread("/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/cuomo2021/both/bulk_sc_tested_pairs_overlap/intersection.txt", header =F, sep="\t")
+bulkInter=testedPairs[V1 %in% bulk$pairID]
+scInter=testedPairs[V1 %in% sc$pairID]
+
+tp=nrow(bulkInter[V1 %in% scInter$V1])
+fp=nrow(bulkInter[!V1 %in% scInter$V1])-tp
+fn=nrow(scInter[!V1 %in% bulkInter$V1])-tp
+tn=nrow(testedPairs)-(fp+fn+tp)
+m = matrix(c(tp,fp,fn,tn),nrow=2)
+f = fisher.test(m)
+f$p.value
+f$estimate
 
 bulk$dataset = "BulkCOPs"
 sc$dataset = "scCOPs"

@@ -6,15 +6,15 @@ options(scipen=1)
 library(data.table)
 library(ggplot2)
 
-inFile = "../data/cuomo2021_sc_cops_g1.bed.gz"
-# inFile = "../data/cuomo2021_sc_cops_s.bed.gz"
-# inFile = "../data/cuomo2021_sc_cops_g2m.bed.gz"
+inFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/G1/CODer_final_dataset_cops_merged_removedoutliers.bed"
+# inFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/S/CODer_final_dataset_cops_merged_removedoutliers.bed"
+# inFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/cell_cycle/G2M/CODer_final_dataset_cops_merged_removedoutliers.bed"
 data = fread(inFile, header = T, sep = "\t")
 
 ### IMPORTANT: update this!
 cyclePhase = "G1"
 
-medataFile = "../data/cuomo2021_cell_cycle_info.tsv"
+medataFile = "/scratch/dribeir1/single_cell/raw_input/cuomo2021/sc_rna_seq/regress_out_cycle_ribo/cell_metadata_cycle.txt"
 metadata = fread(medataFile, header = T, sep = "\t")
 
 data$originalDataset = data$dataset
@@ -29,6 +29,7 @@ length(unique(dt$pairID))
 d = data.table(table(dt$dataset))
 
 ## COPs per donor vs sample size
+# sampleSize = data.table(table(metadata$`donor_id-run_id`))
 sampleSize = data.table(table(metadata[Phase == cyclePhase]$donor))
 summary(sampleSize$N)
 m = merge(d,sampleSize, by = "V1")

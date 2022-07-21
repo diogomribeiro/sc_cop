@@ -5,24 +5,23 @@ library(data.table)
 library(ggplot2)
 
 options(scipen=1)
-args = commandArgs(trailingOnly=TRUE)
 
 ##########
 # Input parameters
 ##########
 
-proteinFile = args[1] #"mirauta_2020_elife/elife-57390-fig1-data3-v3.xls"
+proteinFile = "/scratch/dribeir1/single_cell/raw_input/proteomics/mirauta_2020_elife/elife-57390-fig1-data3-v3.xls"
 proteinData = fread( proteinFile, stringsAsFactors = FALSE, header = T, sep="\t")
 
 wantedGenes = proteinData$ensembl_gene_id
 
-listDonorRun = fread( "../data/cuomo2021_list_individual_experiment.tsv", stringsAsFactors = FALSE, header = F, sep="\t")
+listDonorRun = fread( "/scratch/dribeir1/single_cell/raw_input/cuomo2021/sc_rna_seq/per_donor_per_experiment/list_donor_runs.txt", stringsAsFactors = FALSE, header = F, sep="\t")
 
 ## SINGLE CELL
-copFile = "../data/cuomo2021_sc_cops_control.bed.gz"
+copFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/merged_data/union/CODer_distance_controlled_null.bed"
 
 ## BULK
-# copFile = "../data/cuomo2021_bulk_cops_control.bed.gz"
+# copFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/bulk_rna_seq/15PCA_1MB/final_dataset/CODer_distance_controlled_null.bed_positive"
 
 ##########
 # List of donors in common
@@ -54,6 +53,8 @@ ncol(proteinData)
 geneCol = grep("ensembl_gene_id", colnames(proteinData))
 wantedCols = grep("HPSI", colnames(proteinData))
 
+# wantedCols = grep("HPSI1113i-hayt_1@PT6379@4", colnames(proteinData))
+
 d = data.table(ensembl_gene_id = proteinData$ensembl_gene_id)
 geneLabels = unique(d[order(ensembl_gene_id)])
 
@@ -80,6 +81,7 @@ rowmeans = data.table(rowMeans(finalDT, na.rm = T))
 rowmeans$gene = geneNames
 
 copData = fread( copFile, stringsAsFactors = FALSE, header = T, sep="\t")
+# copData = copData[nullId %in% copData[significant == 1][corrSign == "+"]$nullId]
 copData = copData[,.(pairID, significant, nullId)]
 
 copData$gene1 = data.table(unlist(lapply(copData$pairID, function(x) unlist(strsplit(x,"[|]"))[1])))$V1
@@ -91,6 +93,9 @@ colnames(rowmeans) = c("intensity2","gene2")
 mergedData = merge(d, rowmeans, by = "gene2", all.x =T)
 
 mergedData = mergedData[gene1 %in% geneNames][gene2 %in% geneNames]
+
+# mergedData[is.na(intensity1)]$intensity1 = 0
+# mergedData[is.na(intensity2)]$intensity2 = 0
 
 mergedData$nullId = NULL
 mergedData = unique(mergedData)

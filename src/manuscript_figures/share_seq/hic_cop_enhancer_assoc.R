@@ -4,9 +4,12 @@
 library(ggplot2)
 library(data.table)
 
-data = fread( "zcat ../data/shareseq_hic_contacts.bed.gz", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/hic/coex_F0.5_enhancer_gene_coding_nofilt/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+# data = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/hic/25kb_normalised/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
+data = fread( "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/multi_omics/hic/10kb_normalised/coex_peak_mergenh_F_0.5_coding_nofilt.bed_contacts", stringsAsFactors = FALSE, header = T, sep="\t")
 
-copFile = "../data/shareseq_sc_cops_control.bed.gz"
+copFile = "/work/FAC/FBM/DBC/odelanea/glcoex/dribeiro/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/CODer_distance_controlled_null.bed_positive"
+# copFile = "/scratch/dribeir1/cod_identification/geuvadis/all_chr/final_fdr0.01/final_dataset/post_filter/CODer_distance_controlled_null.bed_positive"
 
 peakAssociationFDRCutoff = 0.05
 peakCorrCutoff = 0.05
@@ -112,3 +115,7 @@ ggplot(d6, aes(x = group, y = N, fill = as.factor(fill) ) ) +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
         axis.line = element_line(colour = "black", size = 1),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
+
+
+
+# write.table(unique(d5[pass == 1][significant == 1]$pairID),"/scratch/dribeir1/single_cell/cop_indentification/share_seq_ma2020/1000R_binary_before_norm_1MB/final_dataset/functional_enrichment/enhancer_sharing/cops_shared_enhancer_hic_support.txt",row.names=F, col.names=F, quote=F)

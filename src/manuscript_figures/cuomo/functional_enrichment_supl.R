@@ -5,7 +5,7 @@ require(ggplot2)
 library(grid)
 library(gridExtra)
 
-inputFile = "../data/functional_enrichment/cuomo2021_functional_enrichment_no_bulk.tsv"
+inputFile = "/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/no_bulk/results.txt"
 
 dataset <- fread(inputFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
 

@@ -8,8 +8,8 @@ require(ggplot2)
 library(grid)
 library(gridExtra)
 
-resFile = paste("../data/cuomo2021_raw_gene_models.bed.gz",sep="")
-copFile = paste("../data/cuomo2021_sc_cops_union_dataset.bed.gz",sep="")
+resFile = paste("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/dr_mean_pseudo/1MB_test/CODer_raw_results.bed",sep="")
+copFile = paste("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/merged_data/union/CODer_cod_identification_cops.bed",sep="")
 
 resData = fread( resFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")
 copData = fread( copFile, stringsAsFactors = FALSE, header = TRUE, sep="\t")

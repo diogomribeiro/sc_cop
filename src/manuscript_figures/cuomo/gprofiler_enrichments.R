@@ -3,9 +3,9 @@ library(gprofiler2)
 library(data.table)
 options("scipen"=100, "digits"=2)
 
-scGenes = fread("../data/functional_enrichment/cuomo2021_sc_genes.txt", header = F)
-bulkGenes = fread("../data/functional_enrichment/cuomo2021_bulk_genes.txt", header = F)
-backgroundGenes = fread("../data/functional_enrichment/cuomo2021_background_genes.txt", header = F)
+scGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/sc_genes.txt", header = F)
+bulkGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/bulk_genes.txt", header = F)
+backgroundGenes = fread("/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/background_genes.txt", header = F)
 
 gostres <- gost(query = list(scGenes$V1,bulkGenes$V1),organism = "hsapiens", domain_scope = "custom", custom_bg = backgroundGenes$V1, sources = c("GO:BP","KEGG","REAC"), multi_query = T)
 
@@ -49,8 +49,8 @@ bulkRes$log10_pval = -log10(bulkRes$p_val2)
 bulkRes$p_val2 = format.pval(bulkRes$p_val2,2)
 bulkRes = bulkRes[order(-log10_pval)]
 
-# write.table(scRes,"gprofiler/sc_results.tsv", quote=F, row.names=F, sep = "\t")
-# write.table(bulkRes,"gprofiler/bulk_results.tsv", quote=F, row.names=F, sep = "\t")
+write.table(scRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/sc_results.tsv", quote=F, row.names=F, sep = "\t")
+write.table(bulkRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/bulk_results.tsv", quote=F, row.names=F, sep = "\t")
 
-# write.table(scGeneRes,"gprofiler/sc_gene_BP_results.tsv", quote=F, sep = "\t",row.names=F, col.names=F)
-# write.table(bulkGeneRes,"gprofiler/bulk_gene_BP_results.tsv", quote=F, sep = "\t",row.names=F, col.names=F)
+write.table(scGeneRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/sc_gene_BP_results.tsv", quote=F, sep = "\t",row.names=F, col.names=F)
+write.table(bulkGeneRes,"/scratch/dribeir1/single_cell/cop_indentification/cuomo2021/sc_rna_seq/per_donor_per_experiment/all_donor_experiment_1MB/functional_enrichment/gprofiler/bulk_gene_BP_results.tsv", quote=F, sep = "\t",row.names=F, col.names=F)
