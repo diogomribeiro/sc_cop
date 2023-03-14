@@ -1,6 +1,6 @@
 import time
 
-from cod.util.log.Logger import Logger
+from util.log.Logger import Logger
 
 
 ##

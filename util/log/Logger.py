@@ -3,7 +3,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from cod.util import Constants
+from util import Constants
 
 ##
 # This class is a singleton used to manage logging

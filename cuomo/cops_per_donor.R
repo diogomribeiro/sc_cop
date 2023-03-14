@@ -6,7 +6,7 @@ options(scipen=1)
 library(data.table)
 library(ggplot2)
 
-inFile = "../source_data/cuomo/CODer_final_dataset_cops_merged_removedoutliers.bed.gz"
+inFile = "~/git/sc_cop/source_data/cuomo/CODer_final_dataset_cops_merged_removedoutliers.bed.gz"
 
 data = fread(inFile, header = T, sep = "\t")
 
@@ -20,7 +20,7 @@ dt = unique(data[,.(pairID,dataset)])
 
 length(unique(dt$pairID))
 
-medataFile = "../source_data/cuomo/CellSampleMetadata_reformat.txt"
+medataFile = "~/git/sc_cop/source_data/cuomo/CellSampleMetadata_reformat.txt"
 metadata = fread(medataFile, header = T, sep = "\t")
 
 ## COPs per donor
@@ -73,6 +73,9 @@ ggplot( dd, aes(x = perc ))  +
         axis.line = element_line(colour = "black", size = 1),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
+# dd$perc = round(dd$perc,3)
+# colnames(dd) = c("gene_pair","n_individuals","perc_individuals")
+# write.table(dd,"/home/dribeiro/git/sc_cop/source_data/plots/fig2_source_data.tsv",sep="\t",row.names=F,quote=F)
 
 dd[perc > 50]
 

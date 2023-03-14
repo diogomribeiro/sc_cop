@@ -12,9 +12,9 @@ import pandas
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 
-from util.Logger import Logger
-from util.Timer import Timer
-from util.Stats import Stats
+from util.log.Logger import Logger
+from util.time.Timer import Timer
+from util.stats.Stats import Stats
 
 #===============================================================================
 DESC_COMMENT = "Script to identify cis co-expressed gene domains (COD)."
