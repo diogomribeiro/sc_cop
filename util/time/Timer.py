@@ -2,7 +2,6 @@ import time
 
 from util.log.Logger import Logger
 
-
 ##
 # This class permits to easy mark the various durations of workflow step
 class Timer( object):
