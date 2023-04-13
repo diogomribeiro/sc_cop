@@ -163,7 +163,6 @@ class ShareSeqCoex(object):
     def read_gene_models(self):
         """
         Read file with cells on rows and information about them on columns.
-        "cell_name" and "donor" columns are required.
 
         Example format (TSV, no header):
             1       .  gene    11869   14362   .       +       .       gene_id "ENSG00000223972.4"; transcript_id "ENSG00000223972.4"; \
