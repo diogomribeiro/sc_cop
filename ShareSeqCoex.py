@@ -6,8 +6,8 @@ import pandas
 from scipy.stats import pearsonr
 from scipy.stats import spearmanr
 
-from util.Logger import Logger
-from util.Timer import Timer
+from util.log.Logger import Logger
+from util.time.Timer import Timer
 
 #===============================================================================
 DESC_COMMENT = "Script to identify co-expressed gene-peak pairs from single cell a atac-seq and gene expression in same cells."
